@@ -1,0 +1,26 @@
+{
+  "name": "nest-core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/aminsh/nest-core.git",
+  "author": "amin <aminsheikhi@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@nestjs/common": "^9.3.12",
+    "@nestjs/core": "^9.3.12",
+    "@nestjs/graphql": "^11.0.4",
+    "@nestjs/jwt": "^8.0.0",
+    "@nestjs/passport": "^8.0.1",
+    "base64url": "^3.0.1",
+    "passport": "^0.5.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@types/passport-google-oauth20": "^2.0.11",
+    "@types/passport-jwt": "^3.0.6",
+    "@types/passport-local": "^1.0.34"
+  }
+}
