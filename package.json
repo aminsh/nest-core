@@ -5,13 +5,19 @@
   "repository": "https://github.com/aminsh/nest-core.git",
   "author": "amin <aminsheikhi@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "nest build",
+    "create:index": "cti create ./ -b -w"
+  },
   "dependencies": {
     "@nestjs/common": "^9.3.12",
     "@nestjs/core": "^9.3.12",
     "@nestjs/graphql": "^11.0.4",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.0.1",
+    "@types/nodemailer": "^6.4.7",
     "base64url": "^3.0.1",
+    "nodemailer": "^6.9.1",
     "passport": "^0.5.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
