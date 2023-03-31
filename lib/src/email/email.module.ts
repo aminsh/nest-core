@@ -1,5 +1,5 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { resolveEmailServiceImplementation, resolveOptionsProvider } from './email.providers';
+import { resolveEmailServiceImp, resolveHtmlRenderServiceImp, resolveOptionsProvider } from './email.providers';
 import { EmailModuleOptions } from './email.type';
 import { EMAIL_SERVICE } from './email.constants';
 
@@ -15,8 +15,10 @@ export class EmailModule {
       module: EmailModule,
       providers: [
         resolveOptionsProvider(options),
-        resolveEmailServiceImplementation(options)
+        resolveEmailServiceImp(options),
+        resolveHtmlRenderServiceImp(options)
       ]
+        .filter(e => e)
     }
   }
 }

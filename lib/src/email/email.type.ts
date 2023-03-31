@@ -1,5 +1,6 @@
 import { Type } from '@nestjs/common';
 import { EmailService } from './service';
+import { HtmlRenderService } from './service/html-render.service';
 
 export interface SendEmailArguments {
   to: string;
@@ -17,6 +18,11 @@ export enum EmailProvider {
 export interface EmailModuleOptions<T = {}> {
   provider: EmailProvider | Type<EmailService>;
   parameters?: T;
+  emailFrom: string;
+  htmlTemplate: {
+    filePath: string;
+    renderProvider?: Type<HtmlRenderService>
+  }
 }
 
 export interface NodemailerParameters {
@@ -25,8 +31,7 @@ export interface NodemailerParameters {
   authentication: {
     username: string;
     password: string;
-  },
-  from: string;
+  }
 }
 
 export interface SendGridEmailParameters {

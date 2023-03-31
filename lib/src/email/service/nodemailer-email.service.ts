@@ -22,6 +22,6 @@ export class NodemailerEmailService implements EmailService {
       }
     });
 
-    await transporter.sendMail({ ...arg, from: parameters.from });
+    await transporter.sendMail({ ...arg, from: this.emailOptions.emailFrom });
   }
 }
