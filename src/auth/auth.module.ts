@@ -22,6 +22,9 @@ import { GoogleStrategy, JwtStrategy } from './strategy';
       provide: JWT_TOKEN_GENERATOR_SERVICE,
       useClass: JwtTokenGeneratorServiceImp
     }
+  ],
+  exports: [
+    JWT_TOKEN_GENERATOR_SERVICE
   ]
 })
 export class AuthModule {
