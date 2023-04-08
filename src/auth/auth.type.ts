@@ -11,10 +11,11 @@ export interface AuthModuleOptions {
     clientSecret: string;
     callbackURL: string;
     scope: string[];
+    authManagerService: Type<AuthGoogleManagerService<any>>
   }
 }
 
-interface GoogleUserProfile {
+export interface GoogleUserProfile {
   name: {
     givenName: string;
     familyName: string;

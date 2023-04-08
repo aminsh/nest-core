@@ -2,17 +2,21 @@ import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { createAuthProvider } from './auth.providers';
 import { AuthModuleOptions, AuthOptionsFactory } from './auth.type';
 import { AuthModuleAsyncOptions } from '@nestjs/passport';
-import { AUTH_MODULE_OPTIONS, AUTH_USER_SERIALIZATION_SERVICE, JWT_TOKEN_GENERATOR_SERVICE } from './auth.constants';
+import {
+  AUTH_MODULE_OPTIONS,
+  AUTH_USER_GOOGLE_MANAGER_SERVICE,
+  AUTH_USER_SERIALIZATION_SERVICE,
+  JWT_TOKEN_GENERATOR_SERVICE
+} from './auth.constants';
 import { JwtTokenGeneratorServiceImp } from './service/jwt-token-generator.service.imp';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtHttpAuthenticationGuard } from './guard';
-import { JwtStrategy } from './strategy';
+import { GoogleAuthenticationGuard, JwtGqlAuthenticationGuard, JwtHttpAuthenticationGuard } from './guard';
+import { GoogleStrategy, JwtStrategy } from './strategy';
 
 @Module({
   providers: [
     JwtHttpAuthenticationGuard,
-    //JwtGqlAuthenticationGuard,
-    //GoogleStrategy,
+    JwtGqlAuthenticationGuard,
     JwtStrategy,
     {
       provide: JWT_TOKEN_GENERATOR_SERVICE,
@@ -29,7 +33,17 @@ export class AuthModule {
         {
           provide: AUTH_USER_SERIALIZATION_SERVICE,
           useClass: options.userSerializationService
-        }
+        },
+        ...(options.google
+          ? [
+            {
+              provide: AUTH_USER_GOOGLE_MANAGER_SERVICE,
+              useClass: options.google.authManagerService
+            },
+            GoogleAuthenticationGuard,
+            GoogleStrategy
+          ]
+          : [])
       ],
       imports: [
         JwtModule.register({
