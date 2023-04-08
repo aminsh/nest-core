@@ -1,26 +1,42 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { JwtGqlAuthenticationGuard } from './guard/jwt-gql-authentication.guard';
-import { JwtHttpAuthenticationGuard } from './guard/jwt-http-authentication.guard';
 import { createAuthProvider } from './auth.providers';
 import { AuthModuleOptions, AuthOptionsFactory } from './auth.type';
 import { AuthModuleAsyncOptions } from '@nestjs/passport';
-import { AUTH_MODULE_OPTIONS } from './auth.constants';
-import { GoogleStrategy } from './strategy/google.strategy';
-import { JwtStrategy } from './strategy/jwt.strategy';
+import { AUTH_MODULE_OPTIONS, AUTH_USER_SERIALIZATION_SERVICE, JWT_TOKEN_GENERATOR_SERVICE } from './auth.constants';
+import { JwtTokenGeneratorServiceImp } from './service/jwt-token-generator.service.imp';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtHttpAuthenticationGuard } from './guard';
+import { JwtStrategy } from './strategy';
 
 @Module({
   providers: [
     JwtHttpAuthenticationGuard,
-    JwtGqlAuthenticationGuard,
-    GoogleStrategy,
-    JwtStrategy
+    //JwtGqlAuthenticationGuard,
+    //GoogleStrategy,
+    JwtStrategy,
+    {
+      provide: JWT_TOKEN_GENERATOR_SERVICE,
+      useClass: JwtTokenGeneratorServiceImp
+    }
   ]
 })
 export class AuthModule {
   static register(options: AuthModuleOptions): DynamicModule {
     return {
       module: AuthModule,
-      providers: createAuthProvider(options)
+      providers: [
+        ...createAuthProvider(options),
+        {
+          provide: AUTH_USER_SERIALIZATION_SERVICE,
+          useClass: options.userSerializationService
+        }
+      ],
+      imports: [
+        JwtModule.register({
+          secret: options.jwt.secret,
+          signOptions: { expiresIn: options.jwt.expiresIn }
+        })
+      ]
     };
   }
 

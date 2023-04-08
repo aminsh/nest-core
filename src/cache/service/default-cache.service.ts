@@ -3,7 +3,7 @@ import { Cache } from 'cache-manager';
 import { CacheService } from './cache.service';
 
 @Injectable()
-export class DefaultCacheService implements CacheService{
+export class DefaultCacheService implements CacheService {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   set(key: string, value: any, expirationTimeInSeconds: number = 0): Promise<void> {

@@ -1,13 +1,15 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { Inject, Injectable } from '@nestjs/common';
-import { AUTH_MODULE_OPTIONS } from '../auth.constants';
-import { AuthModuleOptions } from '../auth.type';
-import base64url from 'base64url';
+import { AUTH_MODULE_OPTIONS, AUTH_USER_GOOGLE_MANAGER_SERVICE } from '../auth.constants';
+import { AuthGoogleManagerService, AuthModuleOptions } from '../auth.type';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(@Inject(AUTH_MODULE_OPTIONS) private authOptions: AuthModuleOptions) {
+  constructor(@Inject(AUTH_MODULE_OPTIONS)
+              private authOptions: AuthModuleOptions,
+              @Inject(AUTH_USER_GOOGLE_MANAGER_SERVICE)
+              private googleManagerService: AuthGoogleManagerService<any>) {
     super({
       clientID: authOptions.google.clientID,
       clientSecret: authOptions.google.clientSecret,
@@ -17,15 +19,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
   authenticate(req, options) {
-    const callbackURL = req.query['callbackUrl'];
-    if (callbackURL)
-      options.state = base64url.encode(callbackURL.toString());
-
-    super.authenticate(req, options)
+    this.googleManagerService.beforeAuthentication && this.googleManagerService.beforeAuthentication(options);
+    super.authenticate(req, options);
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
-    const user = this.authOptions.user.findOrCreate(profile);
+    const user = await this.googleManagerService.findOrCreateUser(profile);
     done(null, user);
   }
 }
